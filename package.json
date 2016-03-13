@@ -1,0 +1,24 @@
+{
+  "name": "hue-switch",
+  "version": "1.0.0",
+  "description": "Using my Amazon Dash button to control my philips hue",
+  "main": "hue-switch.js",
+  "dependencies": {
+    "node-dash-button": "^0.3.0",
+    "node-hue-api": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jshamash/hue-switch.git"
+  },
+  "author": "Jake Shamash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jshamash/hue-switch/issues"
+  },
+  "homepage": "https://github.com/jshamash/hue-switch#readme"
+}
