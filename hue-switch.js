@@ -7,7 +7,7 @@ var dash_button = require('node-dash-button');
 
 var dash = dash_button("a0:02:dc:de:42:66");
 
-var hostname = "192.168.0.100",
+var hostname = "10.0.0.7",
     username = "463d68a912fe9d6a36c555965efa04cb",
     api = new HueApi(hostname, username),
     state;
