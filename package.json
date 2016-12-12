@@ -4,6 +4,7 @@
   "description": "Using my Amazon Dash button to control my philips hue",
   "main": "hue-switch.js",
   "dependencies": {
+    "moment": "^2.17.1",
     "node-dash-button": "^0.3.0",
     "node-hue-api": "^2.2.0"
   },
