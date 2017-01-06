@@ -2,7 +2,9 @@
 var hue = require("node-hue-api"),
 	rp = require('request-promise'),
 	moment = require('moment'),
-	dash_button = require('node-dash-button')
+	dash_button = require('node-dash-button'),
+	Hs100Api = require('hs100-api'),
+	hs100client = new Hs100Api.Client();
 
 // Time between successive dash firings that must be exceeded in order to send a request
 var THRESHOLD_SECONDS = 7;
@@ -13,6 +15,12 @@ var dash = dash_button("a0:02:dc:de:42:66");
 
 var date;
 var groupUrl = 'http://192.168.100.7/api/463d68a912fe9d6a36c555965efa04cb/groups/0'
+
+
+var plug;
+hs100client.startDiscovery().on('plug-new', (newPlug) => {
+	plug = newPlug;
+});
 
 dash.on("detected", function() {
 	console.log("detected!");
@@ -55,6 +63,7 @@ function turnOn() {
 		json: true
 	}).then((response) => {
 		console.log(response);
+		if (plug) plug.setPowerState(true);
 	})
 }
 
@@ -68,6 +77,7 @@ function turnOff() {
 		json: true
 	}).then((response) => {
 		console.log(response);
+		if (plug) plug.setPowerState(false);
 	})
 }
 
