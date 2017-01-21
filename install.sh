@@ -6,6 +6,7 @@ npm install
 
 cat << EOF > /usr/bin/hue-switch.sh
 #!/bin/bash
+export NODE_ENV=production
 node $PWD/hue-switch.js
 EOF
 

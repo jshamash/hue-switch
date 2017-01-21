@@ -4,17 +4,20 @@ var hue = require("node-hue-api"),
 	moment = require('moment'),
 	dash_button = require('node-dash-button'),
 	Hs100Api = require('hs100-api'),
-	hs100client = new Hs100Api.Client();
+	hs100client = new Hs100Api.Client(),
+	config = require('config');
 
 // Time between successive dash firings that must be exceeded in order to send a request
-var THRESHOLD_SECONDS = 7;
+var THRESHOLD_SECONDS = config.get('constants.thresholdSeconds');
 // Sometimes the hue api responds with success but does not take action; retrying seems to fix.
-var RETRY = 3;
+var RETRY = config.get('constants.retry');
 
-var dash = dash_button("a0:02:dc:de:42:66");
+var dash = dash_button(config.get('dash.mac'));
 
 var date;
-var groupUrl = 'http://192.168.100.7/api/463d68a912fe9d6a36c555965efa04cb/groups/0'
+
+var hueConfig = config.get('hue');
+var groupUrl = `http://${hueConfig.ip}/api/${hueConfig.key}/groups/${hueConfig.group}`;
 
 
 var plug;
@@ -57,8 +60,8 @@ function turnOn() {
 		uri: groupUrl + '/action',
 		body: {
 			on: true,
-			scene: "KgtEyWsJambbljC",
-			bri: 255
+			scene: hueConfig.scene,
+			bri: hueConfig.brightness,
 		},
 		json: true
 	}).then((response) => {

@@ -1,0 +1,20 @@
+{
+  "constants": {
+    // Time between successive dash firings that must be exceeded in order to send a request
+    "thresholdSeconds": 7,
+    // Sometimes the hue api responds with success but does not take action; retrying seems to fix.
+    "retry": 3,
+  },
+
+  "hue": {
+    "ip": "192.168.100.2",
+    "key": "463d68a912fe9d6a36c555965efa04cb",
+    "group": 0,
+    "scene": "KgtEyWsJambbljC",
+    "brightness": 255,
+  },
+
+  "dash": {
+    "mac": "a0:02:dc:de:42:66",
+  }
+}
