@@ -12,9 +12,15 @@
     "group": 0,
     "scene": "KgtEyWsJambbljC",
     "brightness": 255,
+    "timeout": 500,
   },
 
   "dash": {
     "mac": "a0:02:dc:de:42:66",
+  },
+
+  "hs100": {
+    "ip": "192.168.100.30",
+    "timeout": 500,
   }
 }

@@ -19,10 +19,10 @@ var date;
 var hueConfig = config.get('hue');
 var groupUrl = `http://${hueConfig.ip}/api/${hueConfig.key}/groups/${hueConfig.group}`;
 
-
-var plug;
-hs100client.startDiscovery().on('plug-new', (newPlug) => {
-	plug = newPlug;
+var hs100config = config.get('hs100');
+var plug = hs100client.getPlug({
+	host: hs100config.ip,
+	timeout: hs100config.timeout,
 });
 
 dash.on("detected", function() {
@@ -33,29 +33,35 @@ dash.on("detected", function() {
 		return;
 	}
 	date = newDate;
-	isOn()
-		.then(function(wasOn) {
-			if (wasOn) {
-				return retry(RETRY, turnOff).then(console.log('turned off'));
-			} else {
-				return retry(RETRY, turnOn).then(console.log('turned on'));
-			}
-		})
-		.catch((err) => console.log(err));
+	isOn().then(wasOn => {
+		if (wasOn) {
+			return retry(RETRY, turnOff).then(console.log('turned off'));
+		} else {
+			return retry(RETRY, turnOn).then(console.log('turned on'));
+		}
+	}).catch(err => console.log("ERROR: " + err));
 });
 
 function isOn() {
 	return rp({
 		uri: groupUrl,
-		json: true
-	}).then((response) => {
-		console.log(response);
+		json: true,
+		timeout: hueConfig.timeout,
+	}).then(response => {
 		return response.state.all_on;
-	})
+	}).catch(reason => {
+		return plug.getPowerState().catch(reason => {
+			return Promise.reject("Couldn't get power state from Hue or HS100");
+		});
+	});
 }
 
 function turnOn() {
-	return rp({
+	var plugOn = plug.setPowerState(true).catch(reason => {
+		return Promise.reject("HS100 failure: " + reason);
+	});
+
+	var hueOn = rp({
 		method: 'PUT',
 		uri: groupUrl + '/action',
 		body: {
@@ -63,29 +69,39 @@ function turnOn() {
 			scene: hueConfig.scene,
 			bri: hueConfig.brightness,
 		},
-		json: true
-	}).then((response) => {
-		console.log(response);
-		if (plug) plug.setPowerState(true);
-	})
+		json: true,
+		timeout: hueConfig.timeout,
+	}).catch(reason => {
+		return Promise.reject("Hue failure: " + reason);
+	});
+
+	return Promise.all([plugOn, hueOn])
 }
 
 function turnOff() {
-	return rp({
+	var plugOff = plug.setPowerState(false).catch(reason => {
+		return Promise.reject("HS100 failure: " + reason);
+	});
+
+	var hueOff = rp({
 		method: 'PUT',
 		uri: groupUrl + '/action',
 		body: {
 			on: false
 		},
-		json: true
-	}).then((response) => {
-		console.log(response);
-		if (plug) plug.setPowerState(false);
-	})
+		json: true,
+		timeout: hueConfig.timeout,
+	}).catch(reason => {
+		return Promise.reject("Hue failure: " + reason);
+	});
+
+	return Promise.all([plugOff, hueOff])
 }
 
 function retry(n, promise) {
-	console.log("Attempt: " + n);
+	console.log("Attempts remaining: " + n);
 	if (n <= 1) return promise();
-	return promise().then(retry(n - 1, promise));
+	return promise().catch(reason => {
+		return retry(n - 1, promise)
+	});
 }
