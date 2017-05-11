@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Gain sudo access
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
+fi
+
 apt-get update
 apt-get install -y libpcap-dev
 npm install
@@ -32,4 +38,7 @@ ln /lib/systemd/hue-switch.service /etc/systemd/system/hue-switch.service
 systemctl daemon-reload
 systemctl start hue-switch.service
 systemctl enable hue-switch.service
-journalctl -u hue-switch -f
+
+echo 'Service started. To see logs, run: '
+echo 'journalctl -u hue-switch -f'
+exit 0
