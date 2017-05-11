@@ -10,14 +10,25 @@
     "ip": "192.168.100.2",
     "key": "463d68a912fe9d6a36c555965efa04cb",
     "group": 0,
-    "scene": "KgtEyWsJambbljC",
-    "brightness": 255,
     "timeout": 500,
   },
 
-  "dash": {
-    "mac": "a0:02:dc:de:42:66",
-  },
+  "dash": [
+    {
+      "mac": "a0:02:dc:de:42:66",
+      "id": "power",
+      // True if this button will act as an off switch
+      "offSwitch": true,
+      "scenes": [
+        {
+          "id": "KgtEyWsJambbljC",
+          "brightness": 255,
+          // Optional, for logging purposes
+          "name": "Bright",
+        },
+      ],
+    },
+  ],
 
   "hs100": {
     "ip": "192.168.100.30",

@@ -12,9 +12,7 @@ var THRESHOLD_SECONDS = config.get('constants.thresholdSeconds');
 // Sometimes the hue api responds with success but does not take action; retrying seems to fix.
 var RETRY = config.get('constants.retry');
 
-var dash = dash_button(config.get('dash.mac'));
-
-var date;
+var dates = {};
 
 var hueConfig = config.get('hue');
 var groupUrl = `http://${hueConfig.ip}/api/${hueConfig.key}/groups/${hueConfig.group}`;
@@ -25,22 +23,32 @@ var plug = hs100client.getPlug({
     timeout: hs100config.timeout,
 });
 
-dash.on("detected", function() {
-    console.log("detected!");
+var dashConfigs = config.get('dash');
+dashConfigs.forEach(dashConfig => {
+    var dash = dash_button(dashConfig.mac);
+    dash.on("detected", () => dashHandler(dashConfig));
+})
+
+function dashHandler(dashConfig) {
+    console.log("dash pressed: " + dashConfig.id);
     var newDate = moment();
-    if (date && newDate.diff(date, 'seconds') <= THRESHOLD_SECONDS) {
+    if (dates[dashConfig.id] && newDate.diff(dates[dashConfig.id], 'seconds') <= THRESHOLD_SECONDS) {
         console.log("ignoring");
         return;
     }
-    date = newDate;
+    dates[dashConfig.id] = newDate;
+
     isOn().then(wasOn => {
-        if (wasOn) {
+        var shouldTurnOff = wasOn && dashConfig.offSwitch;
+        if (shouldTurnOff) {
             return retry(RETRY, turnOff).then(console.log('turned off'));
         } else {
-            return retry(RETRY, turnOn).then(console.log('turned on'));
+            var scenes = dashConfig.scenes;
+            var randomScene = scenes[Math.floor(Math.random() * scenes.length)];
+            return retry(RETRY, () => turnOn(randomScene)).then(console.log('turned on ' + randomScene.name));
         }
     }).catch(err => console.log("ERROR: " + err));
-});
+}
 
 function isOn() {
     return rp({
@@ -56,7 +64,7 @@ function isOn() {
     });
 }
 
-function turnOn() {
+function turnOn(scene) {
     var plugOn = plug.setPowerState(true).catch(reason => {
         return Promise.reject("HS100 failure: " + reason);
     });
@@ -66,8 +74,8 @@ function turnOn() {
         uri: groupUrl + '/action',
         body: {
             on: true,
-            scene: hueConfig.scene,
-            bri: hueConfig.brightness,
+            scene: scene.id,
+            bri: scene.brightness,
         },
         json: true,
         timeout: hueConfig.timeout,
