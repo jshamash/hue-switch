@@ -1,6 +1,4 @@
-// https://github.com/peter-murray/node-hue-api
-var hue = require("node-hue-api"),
-    rp = require('request-promise'),
+var rp = require('request-promise'),
     moment = require('moment'),
     dash_button = require('node-dash-button'),
     Hs100Api = require('hs100-api'),
