@@ -15,7 +15,7 @@
 
   "dash": [
     {
-      "mac": "a0:02:dc:de:42:66",
+      "mac": "0c:47:c9:eb:62:1e",
       "id": "power",
       // True if this button will act as an off switch
       "offSwitch": true,
@@ -25,6 +25,35 @@
           "brightness": 255,
           // Optional, for logging purposes
           "name": "Bright",
+        },
+      ],
+    },
+
+    {
+      "mac": "50:f5:da:df:7e:0a",
+      "id": "red",
+      // True if this button will act as an off switch
+      "offSwitch": false,
+      "scenes": [
+        {
+          "id": "V6tu5pM9wWcTktT",
+          "brightness": 255,
+          "name": "Savanna",
+        },
+        {
+          "id": "Hk94aW7oo8Z0HB4",
+          "brightness": 255,
+          "name": "Arctic",
+        },
+        {
+          "id": "GUTqRK6ZXyLMTeI",
+          "brightness": 255,
+          "name": "Spring",
+        },
+        {
+          "id": "pB2Hu9tWBfRIvyR",
+          "brightness": 255,
+          "name": "Tropical",
         },
       ],
     },
