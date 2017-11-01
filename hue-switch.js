@@ -65,7 +65,8 @@ function isOn() {
 }
 
 function turnOn(scene) {
-    var plugOn = plug.setPowerState(true).catch(reason => {
+    var plugPowerState = scene.hs100 || false;
+    var plugChange = plug.setPowerState(plugPowerState).catch(reason => {
         return Promise.reject("HS100 failure: " + reason);
     });
 
@@ -83,7 +84,7 @@ function turnOn(scene) {
         return Promise.reject("Hue failure: " + reason);
     });
 
-    return Promise.all([plugOn, hueOn])
+    return Promise.all([plugChange, hueOn])
 }
 
 function turnOff() {

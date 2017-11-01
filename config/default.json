@@ -25,6 +25,8 @@
           "brightness": 255,
           // Optional, for logging purposes
           "name": "Bright",
+          // Should the hs100 be on for this scene? (default: false)
+          "hs100": true,
         },
       ],
     },
@@ -39,6 +41,7 @@
           "id": "V6tu5pM9wWcTktT",
           "brightness": 255,
           "name": "Savanna",
+          "hs100": true,
         },
         {
           "id": "Hk94aW7oo8Z0HB4",
@@ -54,6 +57,7 @@
           "id": "pB2Hu9tWBfRIvyR",
           "brightness": 255,
           "name": "Tropical",
+          "hs100": true,
         },
       ],
     },
